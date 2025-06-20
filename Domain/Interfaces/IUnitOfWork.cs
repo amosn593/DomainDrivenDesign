@@ -7,6 +7,7 @@ public interface IUnitOfWork
     IProductRepository ProductRepository { get; }
     ISaleRepository SaleRepository { get; }
     ICustomerRepository CustomerRepository { get; }
+    IAccountRepository AccountRepository { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
 
@@ -19,3 +20,9 @@ public interface IRepository<T> where T : Entity
 public interface IProductRepository : IRepository<Product> { }
 public interface ISaleRepository : IRepository<Sale> { }
 public interface ICustomerRepository : IRepository<Customer> { }
+
+public interface IAccountRepository : IRepository<Account>
+{
+    Task<Account?> GetByNameAsync(string name);
+    void Update(Account account);
+}

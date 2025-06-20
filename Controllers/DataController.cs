@@ -37,14 +37,29 @@ public class DataController : ControllerBase
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Price = p.Price.Amount
-                })
+                    Price = p.Price.Amount,
+                    StockQuantity = p.StockQuantity
+            })
             .ToListAsync();
 
         return Ok(products);
     }
 
-    [HttpPost("CreateSale")]
+    [HttpPost("stockin")]
+    public async Task<IActionResult> StockIn([FromBody] StockInCommand command)
+    {
+        await _mediator.Send(command);
+        return Ok();
+    }
+
+    [HttpPost("stockout")]
+    public async Task<IActionResult> StockOut([FromBody] StockOutCommand command)
+    {
+        await _mediator.Send(command);
+        return Ok();
+    }
+
+        [HttpPost("CreateSale")]
     public async Task<IActionResult> CreateSale(MakeSaleCommand command)
     {
         var id = await _mediator.Send(command);

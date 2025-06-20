@@ -19,6 +19,7 @@ public class Sale : Entity
     }
     public static Sale Create(int customerId) => new(customerId);
     public void AddItem(Product product, int quantity) => Items.Add(SaleItem.Create(product.Id, quantity, product.Price));
+   
 }
 
 public class SaleItem : Entity

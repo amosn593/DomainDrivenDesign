@@ -1,6 +1,7 @@
 ﻿using DomainDrivenDesign.Domain.Interfaces;
 using DomainDrivenDesign.Domain.Models;
 using DomainDrivenDesign.Infrastructure.DataContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace DomainDrivenDesign.Infrastructure.Repositories;
 
@@ -27,4 +28,20 @@ public class CustomerRepository : ICustomerRepository
     public CustomerRepository(AppDbContext context) => _context = context;
     public void Add(Customer entity) => _context.Customers.Add(entity);
     public Task<Customer?> GetByIdAsync(int id) => _context.Customers.FindAsync(id).AsTask();
+}
+
+public class AccountRepository : IAccountRepository
+{
+    private readonly AppDbContext _context;
+    public AccountRepository(AppDbContext context) => _context = context;
+
+    public Task<Account?> GetByIdAsync(int id) =>
+        _context.Accounts.Include(a => a.AuditTrail).FirstOrDefaultAsync(a => a.Id == id);
+
+    public Task<Account?> GetByNameAsync(string name) =>
+        _context.Accounts.FirstOrDefaultAsync(a => a.Name == name);
+
+    public void Add(Account account) => _context.Accounts.Add(account);
+
+    public void Update(Account account) => _context.Accounts.Update(account);
 }

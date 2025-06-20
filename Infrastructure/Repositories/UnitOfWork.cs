@@ -9,13 +9,22 @@ public class UnitOfWork : IUnitOfWork
     public IProductRepository ProductRepository { get; }
     public ISaleRepository SaleRepository { get; }
     public ICustomerRepository CustomerRepository { get; }
-    public UnitOfWork(AppDbContext context)
+    public IAccountRepository AccountRepository { get; }
+    public UnitOfWork(AppDbContext context,
+        IProductRepository productRepository,
+        ICustomerRepository customerRepository,
+        ISaleRepository saleRepository,
+        IAccountRepository accountRepository)
     {
         _context = context;
-        ProductRepository = new ProductRepository(context);
-        SaleRepository = new SaleRepository(context);
-        CustomerRepository = new CustomerRepository(context);
+        ProductRepository = productRepository;
+        CustomerRepository = customerRepository;
+        SaleRepository = saleRepository;
+        AccountRepository = accountRepository;
     }
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
-        _context.SaveChangesAsync(cancellationToken);
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await _context.SaveChangesAsync(cancellationToken);
+        return result;
+    }
 }

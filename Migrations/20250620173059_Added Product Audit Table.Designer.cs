@@ -4,6 +4,7 @@ using DomainDrivenDesign.Infrastructure.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DomainDrivenDesign.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250620173059_Added Product Audit Table")]
+    partial class AddedProductAuditTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,54 +24,6 @@ namespace DomainDrivenDesign.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DomainDrivenDesign.Domain.Models.Account", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Accounts");
-                });
-
-            modelBuilder.Entity("DomainDrivenDesign.Domain.Models.AccountAudit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("AmountChanged")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Operation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("AccountAudits");
-                });
 
             modelBuilder.Entity("DomainDrivenDesign.Domain.Models.Customer", b =>
                 {
@@ -185,15 +140,6 @@ namespace DomainDrivenDesign.Migrations
                     b.ToTable("SaleItems");
                 });
 
-            modelBuilder.Entity("DomainDrivenDesign.Domain.Models.AccountAudit", b =>
-                {
-                    b.HasOne("DomainDrivenDesign.Domain.Models.Account", null)
-                        .WithMany("AuditTrail")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DomainDrivenDesign.Domain.Models.Product", b =>
                 {
                     b.OwnsOne("DomainDrivenDesign.Domain.ValueObjects.Money", "Price", b1 =>
@@ -269,11 +215,6 @@ namespace DomainDrivenDesign.Migrations
 
                     b.Navigation("UnitPrice")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DomainDrivenDesign.Domain.Models.Account", b =>
-                {
-                    b.Navigation("AuditTrail");
                 });
 
             modelBuilder.Entity("DomainDrivenDesign.Domain.Models.Product", b =>

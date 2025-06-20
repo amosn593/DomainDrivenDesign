@@ -21,9 +21,9 @@ public class MakeSaleHandler : IRequestHandler<MakeSaleCommand, int>
             product.DecreaseStock(item.Quantity);
             sale.AddItem(product, item.Quantity);
         }
+        
         var customer = await _unitOfWork.CustomerRepository.GetByIdAsync(request.CustomerId);
         customer.AddLoyaltyPoints((int)sale.Total / 10);
-        //sale.AddDomainEvent(new SaleCompletedEvent(sale));
         _unitOfWork.SaleRepository.Add(sale);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return sale.Id;
